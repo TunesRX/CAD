@@ -1,0 +1,44 @@
+/*
+ * pi_kernel2.cl
+ *
+ *  Created on: 27/02/2014
+ *      Author: Diego Nieto Muñoz
+ */
+
+__kernel void Pi(__global double *workGroupBuffer, 
+		__local double *scratch,
+		const uint niter,
+		const uint chunk)
+{
+	const uint lid = get_local_id(0);
+	const uint gid = get_global_id(0);
+
+	const double h = (1.0/(double)niter);
+	double partial_sum = 0.0;
+
+	// Each thread compute chunk iterations
+	for(uint i=gid*chunk; i<(gid*chunk)+chunk; i++) {
+		double x = h * ((double) i - 0.5);
+		partial_sum += 4.0 / (1.0 + x * x);
+	}
+
+	// Each thread store its partial sum in the workgroup array
+	scratch[lid] = partial_sum;
+
+	// Synchronize all threads within the workgroup
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	double local_pi = 0;
+
+	// Only thread 0 of each workgroup perform the reduction
+	// of that workgroup
+	if(lid == 0) {
+		const uint length = lid + get_local_size(0);
+		for (uint i = lid; i<length; i++) {
+			local_pi += scratch[i];
+		}
+		// It store the workgroup sum
+		// Final reduction, between block, is done out by CPU
+		workGroupBuffer[get_group_id(0)] = local_pi;
+	}
+}
