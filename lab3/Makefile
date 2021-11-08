@@ -2,7 +2,7 @@
 
 .PHONY:	all
 
-all:	main
+all:	cuda
 
 main:	main.c 
 	cc -g -o $@ $< 
@@ -14,4 +14,4 @@ cuda:	cuda.cu
 
 .PHONY:	clean
 clean:
-	rm -f main out.ppm
+	rm -f cuda out.ppm

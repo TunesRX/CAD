@@ -1,6 +1,8 @@
-1)  ssh -p12034 cad00@cluster.di.fct.unl.pt
+1)  
+ssh -p12034 cad00@cluster.di.fct.unl.pt
 entra no cluster no front end
- 2) ssh node16
+ 2) 
+ ssh node16
  entra no cluster que consegue correr
 
 
