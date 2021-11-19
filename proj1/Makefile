@@ -9,6 +9,9 @@ all:	main
 main:	main.c 
 	cc $(CFLAGS) -o $@ $< -lm
 
+cuda:	main.cu
+	nvcc -g -o $@ $<
+
 
 .PHONY:	clean
 clean:
